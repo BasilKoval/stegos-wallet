@@ -57,7 +57,7 @@ export default class RecoveryPhrase extends Component<Props> {
             readOnly={readOnly}
             name={phrase[i].id}
             onChange={e => this.handleInputChange(e)}
-            onPaste={e => e.preventDefault() || this.paste()}
+            // onPaste={e => e.preventDefault() || this.paste()}
             autoFocus={i === 0}
             className={styles.Input}
           />
