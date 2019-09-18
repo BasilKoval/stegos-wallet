@@ -151,18 +151,19 @@ export default class RecoveryPhrase extends Component<Props> {
               <Icon name="content_copy" color="#fff" size={31} />
             </div>
           )}
-          {!readOnly && (
-            <div
-              onClick={() => this.paste()}
-              onKeyPress={() => false}
-              role="button"
-              tabIndex="-1"
-              className={styles.Action}
-              title="Paste"
-            >
-              <Icon name="content_paste" color="#fff" size={31} />
-            </div>
-          )}
+          {false &&
+            !readOnly(
+              <div
+                onClick={() => this.paste()}
+                onKeyPress={() => false}
+                role="button"
+                tabIndex="-1"
+                className={styles.Action}
+                title="Paste"
+              >
+                <Icon name="content_paste" color="#fff" size={31} />
+              </div>
+            )}
           {notEmpty && (
             <div
               onClick={() => this.print()}

@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <title>Stegos Wallet</title>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,900&display=swap"
+          rel="stylesheet">
     <!--    TODO: download all icons fonts and css and store they locally-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
-  <body ondragstart="return false;" ondrop="return false;">
-    <pre id="content-to-print">
+</head>
+<body ondragstart="return false;" ondrop="return false;">
+<pre id="content-to-print">
 
     </pre>
-    <script>
-      const ipcRenderer = require("electron").ipcRenderer;
+<script>
+  const ipcRenderer = require('electron').ipcRenderer;
+  const contentContainer = document.getElementById('content-to-print');
 
-      ipcRenderer.on("printPDF", (event, content) => {
-        console.log(content);
-        document.getElementById('content-to-print').innerHTML = content;
-        ipcRenderer.send("readyToPrintPDF");
-      });
-    </script>
-  </body>
+  ipcRenderer.on('printPDF', (event, content) => {
+    console.log(content);
+    contentContainer.innerHTML = content;
+    ipcRenderer.send('readyToPrintPDF');
+  });
+  ipcRenderer.on('wrotePdf', () => contentContainer.innerHTML = '')
+</script>
+</body>
 </html>

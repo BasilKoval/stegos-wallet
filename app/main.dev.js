@@ -139,7 +139,7 @@ app.on('ready', async () => {
   });
   ipcMain.on('readyToPrintPDF', event => {
     workerWindow.webContents.print({}, (success: boolean) => {
-      event.sender.send('wrote-pdf', success);
+      event.sender.send('wrotePdf', success);
     });
   });
 
