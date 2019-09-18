@@ -32,6 +32,7 @@ export default class AppUpdater {
 app.commandLine.appendSwitch('high-dpi-support', 'true');
 
 let mainWindow = null;
+let workerWindow: BrowserWindow = null;
 let nodeProcess = null;
 let isTokenCapturing = false;
 const nodePath =
@@ -111,6 +112,10 @@ app.on('ready', async () => {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+    if (workerWindow) {
+      workerWindow.close();
+      workerWindow = null;
+    }
   });
 
   // Disable default electron menu bar
@@ -119,6 +124,24 @@ app.on('ready', async () => {
 
   // No menu bar specified in design, remove unused menu builder file app/menu.js?
   mainWindow.setMenu(null);
+
+  workerWindow = new BrowserWindow();
+  workerWindow.setParentWindow(mainWindow);
+  workerWindow.loadURL(`file://${__dirname}/print.html`);
+  workerWindow.hide();
+
+  workerWindow.on('closed', () => {
+    workerWindow = null;
+  });
+
+  ipcMain.on('printPDF', (event, content) => {
+    workerWindow.webContents.send('printPDF', content);
+  });
+  ipcMain.on('readyToPrintPDF', event => {
+    workerWindow.webContents.print({}, (success: boolean) => {
+      event.sender.send('wrote-pdf', success);
+    });
+  });
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line

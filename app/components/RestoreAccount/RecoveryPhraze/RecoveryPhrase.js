@@ -1,5 +1,5 @@
 // @flow
-import { clipboard } from 'electron';
+import { clipboard, ipcRenderer } from 'electron';
 import React, { Component } from 'react';
 import Icon from '../../common/Icon/Icon';
 import styles from './RecoveryPhraze.css';
@@ -67,13 +67,17 @@ export default class RecoveryPhrase extends Component<Props> {
     return phraseInputs;
   }
 
-  copy() {
+  get formattedPhrase(): string {
     const { phrase } = this.props;
     let result = '';
     phrase.forEach((part, index) => {
       result += `${index + 1}. ${part.value}\n`;
     });
-    clipboard.writeText(result);
+    return result;
+  }
+
+  copy() {
+    clipboard.writeText(this.formattedPhrase);
   }
 
   paste() {
@@ -111,6 +115,10 @@ export default class RecoveryPhrase extends Component<Props> {
     if (typeof onChange === 'function') {
       onChange(clearValues);
     }
+  }
+
+  print() {
+    ipcRenderer.send('printPDF', this.formattedPhrase);
   }
 
   render() {
@@ -153,6 +161,18 @@ export default class RecoveryPhrase extends Component<Props> {
               title="Paste"
             >
               <Icon name="content_paste" color="#fff" size={31} />
+            </div>
+          )}
+          {notEmpty && (
+            <div
+              onClick={() => this.print()}
+              onKeyPress={() => false}
+              role="button"
+              tabIndex="-1"
+              className={styles.Action}
+              title="Print"
+            >
+              <Icon name="print" color="#fff" size={31} />
             </div>
           )}
         </div>

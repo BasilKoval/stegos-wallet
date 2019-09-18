@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Stegos Wallet</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,900&display=swap" rel="stylesheet">
+    <!--    TODO: download all icons fonts and css and store they locally-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body ondragstart="return false;" ondrop="return false;">
+    <pre id="content-to-print">
+
+    </pre>
+    <script>
+      const ipcRenderer = require("electron").ipcRenderer;
+
+      ipcRenderer.on("printPDF", (event, content) => {
+        console.log(content);
+        document.getElementById('content-to-print').innerHTML = content;
+        ipcRenderer.send("readyToPrintPDF");
+      });
+    </script>
+  </body>
+</html>

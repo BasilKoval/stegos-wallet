@@ -125,6 +125,7 @@ export default class PasswordProtection extends Component<Props> {
                   disabled={passError || confirmPassError}
                   iconRight="keyboard_backspace"
                   iconRightMirrorHor
+                  submit
                 >
                   <FormattedMessage id="button.next" />
                 </Button>
