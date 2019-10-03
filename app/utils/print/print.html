@@ -16,12 +16,12 @@
   const ipcRenderer = require('electron').ipcRenderer;
   const contentContainer = document.getElementById('content-to-print');
 
-  ipcRenderer.on('printPDF', (event, content) => {
+  ipcRenderer.on('printJob', (event, content) => {
     console.log(content);
     contentContainer.innerHTML = content;
-    ipcRenderer.send('readyToPrintPDF');
+    ipcRenderer.send('readyToPrintJob');
   });
-  ipcRenderer.on('wrotePdf', () => contentContainer.innerHTML = '')
+  ipcRenderer.on('wroteJob', () => contentContainer.innerHTML = '')
 </script>
 </body>
 </html>

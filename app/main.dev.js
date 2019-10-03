@@ -18,13 +18,13 @@ import getPath from 'platform-folders';
 // import MenuBuilder from './menu';
 import { TOKEN_RECEIVED } from './actions/node';
 import { wsEndpoint } from './constants/config';
+import { create } from './utils/print';
 
 const WebSocket = require('ws');
 
 app.commandLine.appendSwitch('high-dpi-support', 'true');
 
 let mainWindow = null;
-let workerWindow: BrowserWindow = null;
 let nodeProcess = null;
 const nodePath =
   process.env.NODE_ENV === 'production'
@@ -103,14 +103,6 @@ app.on('ready', async () => {
     }
   });
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-    if (workerWindow) {
-      workerWindow.close();
-      workerWindow = null;
-    }
-  });
-
   // Disable default electron menu bar
   // const menuBuilder = new MenuBuilder(mainWindow);
   // menuBuilder.buildMenu();
@@ -118,27 +110,8 @@ app.on('ready', async () => {
   // No menu bar specified in design, remove unused menu builder file app/menu.js?
   mainWindow.setMenu(null);
 
-  workerWindow = new BrowserWindow();
-  workerWindow.setParentWindow(mainWindow);
-  workerWindow.loadURL(`file://${__dirname}/print.html`);
-  workerWindow.hide();
-
-  workerWindow.on('closed', () => {
-    workerWindow = null;
-  });
-
-  ipcMain.on('printPDF', (event, content) => {
-    workerWindow.webContents.send('printPDF', content);
-  });
-  ipcMain.on('readyToPrintPDF', event => {
-    workerWindow.webContents.print({}, (success: boolean) => {
-      event.sender.send('wrotePdf', success);
-    });
-  });
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  new AppUpdater();
+  // create print worker
+  create(mainWindow);
 });
 
 app.on('quit', () => {

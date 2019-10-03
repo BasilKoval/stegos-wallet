@@ -1,8 +1,8 @@
 // @flow
-import { clipboard, ipcRenderer } from 'electron';
 import React, { Component } from 'react';
 import Icon from '../../common/Icon/Icon';
 import styles from './RecoveryPhraze.css';
+import { print } from '../../../utils/print';
 
 type Props = {
   wordsCount: number,
@@ -10,8 +10,6 @@ type Props = {
   readOnly?: boolean,
   onChange?: Function
 };
-
-const passPhaseSearchRegex = '(\\d+)\\. ([a-z].*)\\n';
 
 export default class RecoveryPhrase extends Component<Props> {
   props: Props;
@@ -78,37 +76,6 @@ export default class RecoveryPhrase extends Component<Props> {
     return result;
   }
 
-  copy() {
-    clipboard.writeText(this.formattedPhrase);
-  }
-
-  paste() {
-    const { wordsCount, onChange } = this.props;
-    const clipboardContent = clipboard.readText();
-    const regex = RegExp(passPhaseSearchRegex, 'g');
-    const values = [];
-    let word = regex.exec(clipboardContent);
-    if (word === null || word.length !== 3 || parseInt(word[1], 10) !== 1) {
-      return;
-    }
-    do {
-      values.push({ id: values.length, value: word[2] });
-      word = regex.exec(clipboardContent);
-    } while (
-      word !== null &&
-      values.length < 24 &&
-      values.length + 1 === parseInt(word[1], 10) &&
-      word.length === 3
-    );
-    if (values.length !== wordsCount) {
-      return;
-    }
-    this.setState({ values });
-    if (typeof onChange === 'function') {
-      onChange(values);
-    }
-  }
-
   clear() {
     const { onChange } = this.props;
     const { values } = this.state;
@@ -117,10 +84,6 @@ export default class RecoveryPhrase extends Component<Props> {
     if (typeof onChange === 'function') {
       onChange(clearValues);
     }
-  }
-
-  print() {
-    ipcRenderer.send('printPDF', this.formattedPhrase);
   }
 
   render() {
@@ -143,32 +106,7 @@ export default class RecoveryPhrase extends Component<Props> {
           )}
           {notEmpty && (
             <div
-              onClick={() => this.copy()}
-              onKeyPress={() => false}
-              role="button"
-              tabIndex="-1"
-              className={styles.Action}
-              title="Copy"
-            >
-              <Icon name="content_copy" color="#fff" size={31} />
-            </div>
-          )}
-          {false &&
-            !readOnly(
-              <div
-                onClick={() => this.paste()}
-                onKeyPress={() => false}
-                role="button"
-                tabIndex="-1"
-                className={styles.Action}
-                title="Paste"
-              >
-                <Icon name="content_paste" color="#fff" size={31} />
-              </div>
-            )}
-          {notEmpty && (
-            <div
-              onClick={() => this.print()}
+              onClick={() => print(this.formattedPhrase)}
               onKeyPress={() => false}
               role="button"
               tabIndex="-1"
