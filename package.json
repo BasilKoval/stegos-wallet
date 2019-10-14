@@ -69,6 +69,7 @@
     "files": [
       "app/dist/",
       "app/app.html",
+      "app/utils/print/print.html",
       "app/main.prod.js",
       "app/main.prod.js.map",
       "package.json"
