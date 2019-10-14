@@ -127,7 +127,9 @@ export default class PasswordProtection extends Component<Props> {
                   iconRightMirrorHor
                   submit
                 >
-                  <FormattedMessage id="button.next" />
+                  <nobr>
+                    <FormattedMessage id="button.next" />
+                  </nobr>
                 </Button>
               </div>
             </div>
